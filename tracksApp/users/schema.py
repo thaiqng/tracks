@@ -17,7 +17,12 @@ class Query(graphene.ObjectType):
     def resolve_me(self, info):
         user = info.context.user
         if user.is_anonymous: # if use is not authenticated
-            raise Exception("Not signed in!") # to prevent this exception must pass through a valid jwt token on an auth header when sending a request to execute a graphql operation i.e. because can access must execute token_auth mutation (signed up)
+            raise Exception("Not signed in!")
+            '''
+                To prevent this exception must pass through a valid jwt token on an auth header when sending a request to execute a graphql operation
+                i.e. because can access must execute token_auth mutation (signed up)
+                To test use insomnia.rest to send request, providing a Authorization header with value of "jwt [token]"
+            '''
         return user
 
 class CreateUser(graphene.Mutation):
