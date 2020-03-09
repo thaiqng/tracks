@@ -8,4 +8,4 @@ class Mutation(tracks.schema.Mutation, graphene.ObjectType):
     pass
 
 # create SCHEMA
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutation)
