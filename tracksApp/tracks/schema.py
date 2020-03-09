@@ -7,7 +7,7 @@ class TrackType(DjangoObjectType):
     class Meta:
         model = Track # tell TrackType to inherit Track model
 
-class Query(graphene.ObjectType):
+class Query(graphene.ObjectType): # root query class
     tracks = graphene.List(TrackType) # create track query to get all tracks as a checklist
 
     def resolve_tracks(self, info): # resolve the query
