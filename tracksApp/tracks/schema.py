@@ -12,3 +12,21 @@ class Query(graphene.ObjectType): # root query class
 
     def resolve_tracks(self, info): # resolve the query
         return Track.objects.all()
+
+# mutation in createTrack class
+class CreateTrack(graphene.Mutation):
+    track = graphene.Field(TrackType) # return created track on a track field
+
+    class Arguments: # provide inner arg class
+        title = graphene.String()
+        description = graphene.String()
+        url = graphene.String()
+
+    def mutate(self, info, title, description, url): # resolver function that store the var and persist it into db, return the class instance
+        track = Track(title=title, description=description, url=url)
+        track.save()
+        return CreateTrack(track=track)
+
+# root mutation class
+class Mutation(graphene.ObjectType):
+    create_track = CreateTrack.Field()
