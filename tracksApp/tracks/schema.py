@@ -14,7 +14,7 @@ class Query(graphene.ObjectType): # root query class
         return Track.objects.all()
 
 # mutation in createTrack class
-class CreateTrack(graphene.mutation):
+class CreateTrack(graphene.Mutation):
     track = graphene.Field(TrackType) # return created track on a track field
 
     class Arguments: # provide inner arg class
