@@ -3,6 +3,7 @@ import graphene
 from graphene_django import DjangoObjectType # to inherit the DjangoObjectType
 from .models import Track, Like  # to tell graphene_django about the shape of the tracks data
 from users.schema import UserType # for the like (see graphene docs)
+from django.db.models import Q # allow more complex query by turning filters into objects so we can use logical operators on them
 
 class TrackType(DjangoObjectType):
     class Meta:
@@ -13,11 +14,20 @@ class LikeType(DjangoObjectType):
     class Meta:
         model = Like
 
-class Query(graphene.ObjectType): # root query class
-    tracks = graphene.List(TrackType) # create track query to get all tracks as a checklist
+class Query(graphene.ObjectType):
+    tracks = graphene.List(TrackType, search=graphene.String()) # create track query to get all tracks as a checklist
     likes = graphene.List(LikeType)
 
-    def resolve_tracks(self, info): # resolve the query
+    def resolve_tracks(self, info, search=None): # resolve the query
+        if search:
+            filters = (
+                Q(title__icontains=search) |
+                Q(description__icontains=search) |
+                Q(url__icontains=search) |
+                Q(posted_by__username__icontains=search)
+            )
+            return Track.objects.filter(filters) # there are other ways of matching. See docs
+
         return Track.objects.all()
 
     def resolve_likes(self, info):
