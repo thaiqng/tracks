@@ -22,15 +22,41 @@ class CreateTrack(graphene.Mutation):
         description = graphene.String()
         url = graphene.String()
 
-    def mutate(self, info, title, description, url): # resolver function that store the var and persist it into db, return the class instance
+    def mutate(self, info, title, description=None, url=None): # resolver function that store the var and persist it into db, return the class instance
         user = info.context.user or None # get info about the user
+        track = Track(title=title, description=description, url=url, posted_by=user)
+
         # soft crash by raising exception if not authenticated
         if user.is_anonymous:
             raise Exception("Sign in to add a track!")
-        track = Track(title=title, description=description, url=url, posted_by=user)
+
         track.save()
         return CreateTrack(track=track)
 
-# root mutation class
+# update track class
+class UpdateTrack(graphene.Mutation):
+    track = graphene.Field(TrackType)
+
+    class Arguments: # provide inner arg class
+        track_id = graphen.Int(required=True)
+        title = graphene.String(required=True)
+        description = graphene.String()
+        url = graphene.String()
+
+    def mutate(self, info, track_id, title, description=None, url=None):
+        user = info.context.user
+        track = Track.objects.get(id=track_id)
+
+        if track.posted_by != user:
+            raise Exception("Not allowed to update this track!")
+
+        track.title = title
+        track.description = description
+        track.url = url
+        track.save()
+        return UpdateTrack(track=track)
+
+# track mutation class
 class Mutation(graphene.ObjectType):
     create_track = CreateTrack.Field()
+    update_track = UpdateTrack.Field()
