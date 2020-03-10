@@ -18,7 +18,7 @@ class CreateTrack(graphene.Mutation):
     track = graphene.Field(TrackType) # return created track on a track field
 
     class Arguments: # provide inner arg class
-        title = graphene.String()
+        title = graphene.String(required=True)
         description = graphene.String()
         url = graphene.String()
 
