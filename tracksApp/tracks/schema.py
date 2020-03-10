@@ -22,7 +22,7 @@ class CreateTrack(graphene.Mutation):
         description = graphene.String()
         url = graphene.String()
 
-    def mutate(self, info, title, description, url): # resolver function that store the var and persist it into db, return the class instance
+    def mutate(self, info, title, description=None, url=None): # resolver function that store the var and persist it into db, return the class instance
         user = info.context.user or None # get info about the user
         # soft crash by raising exception if not authenticated
         if user.is_anonymous:
@@ -30,6 +30,9 @@ class CreateTrack(graphene.Mutation):
         track = Track(title=title, description=description, url=url, posted_by=user)
         track.save()
         return CreateTrack(track=track)
+
+# update track class
+
 
 # root mutation class
 class Mutation(graphene.ObjectType):
