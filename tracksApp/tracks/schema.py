@@ -23,7 +23,11 @@ class CreateTrack(graphene.Mutation):
         url = graphene.String()
 
     def mutate(self, info, title, description, url): # resolver function that store the var and persist it into db, return the class instance
-        track = Track(title=title, description=description, url=url)
+        user = info.context.user or None # get info about the user
+        # soft crash by raising exception if not authenticated
+        if user.is_anonymous:
+            raise Exception("Sign in to add a track!")
+        track = Track(title=title, description=description, url=url, posted_by=user)
         track.save()
         return CreateTrack(track=track)
 
