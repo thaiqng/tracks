@@ -1,5 +1,5 @@
 from django.db import models
-# import user model
+from django.contrib.auth import get_user_model # import user model
 
 # Create your models here.
 class Track(models.Model):
