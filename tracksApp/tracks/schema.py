@@ -8,11 +8,20 @@ class TrackType(DjangoObjectType):
     class Meta:
         model = Track # tell TrackType to inherit Track model
 
+# create like type
+class LikeType(DjangoObjectType):
+    class Meta:
+        model = Like
+
 class Query(graphene.ObjectType): # root query class
     tracks = graphene.List(TrackType) # create track query to get all tracks as a checklist
+    likes = graphene.List(LikeType)
 
     def resolve_tracks(self, info): # resolve the query
         return Track.objects.all()
+
+    def resolve_likes(self, info):
+        return Like.objects.all()
 
 # mutation in createTrack class
 class CreateTrack(graphene.Mutation):
