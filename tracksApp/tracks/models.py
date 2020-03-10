@@ -12,3 +12,9 @@ class Track(models.Model):
         get_user_model(),
         null=True,
         on_delete=models.CASCADE) # posted by ?user using a many-to-one relationship and a CASCADE on_delete
+
+# Likes model
+class Like(models.Model):
+    user = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE) # user attr with ForeignKey
+    track = models.ForeignKey('tracks.Track', related_name='likes', on_delete=models.CASCADE) # track attr with ForeignKey
+    
